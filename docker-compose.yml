@@ -1,0 +1,52 @@
+# docker-compose.yml 用來定義 container 的環境。包含建構 container 的 images 還有 images 如何交互
+version: "3.9"
+
+services: 
+    nginx:
+        container_name: nginx
+        image: nginx:latest
+        # 本機及容器掛載
+        volumes:
+            - ./nginx:/etc/nginx/conf.d/
+            - ./LaravelProject/:/var/www/html/
+        ports:
+            - "80:80"
+        depends_on: 
+            - php
+        restart: unless-stopped
+
+    php:
+        container_name: php
+        # image: php:7.4-fpm
+        build: 
+            context: ./
+            dockerfile: Dockerfile
+        ports: 
+            - "9000:9000"
+        volumes: 
+            - ./LaravelProject/:/var/www/html/
+        depends_on: 
+            - db
+            - redis
+
+    db:
+        container_name: db
+        image: mysql:5.7
+        restart: always
+        ports: 
+            - "2222:2222"
+        # 測試不需要 volume 資料庫
+        # volumes:
+        #     - ./db_data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: practice123
+    
+
+    redis:
+        container_name: redis
+        image: redis:6.0
+        ports:
+            - "6379:6379"
+        # 除非真的要用，否則沒人在 volume redis
+        # volumes: 
+        #     - myredis:/usr/local/etc/redis/redis.conf
