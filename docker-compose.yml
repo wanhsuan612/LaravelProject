@@ -31,16 +31,34 @@ services:
 
     db:
         container_name: db
-        image: mysql:5.7
+        # image: mysql:5.7
+        # restart: always
+        # # ports: 
+        # #     - "2222:2222"
+        # # 測試不需要 volume 資料庫
+        # # volumes:
+        # #     - ./db_data:/var/lib/mysql
+        # environment:
+        #     MYSQL_ROOT_PASSWORD: practice123
+        image: postgres
         restart: always
-        # ports: 
-        #     - "2222:2222"
-        # 測試不需要 volume 資料庫
-        # volumes:
-        #     - ./db_data:/var/lib/mysql
+        ports: 
+            - "5432:5432"
         environment:
-            MYSQL_ROOT_PASSWORD: practice123
-    
+            POSTGRES_PASSWORD: example
+            POSTGRES_USER: user
+            POSTGRES_DB: name
+        volumes: 
+            - ./env_config/postgres.conf:/etc/postgresql.conf
+        command: postgres -c config_file=/etc/postgresql.conf
+
+    adminer:
+        container_name: adminer
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
+
 
     redis:
         container_name: redis
