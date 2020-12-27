@@ -3,9 +3,9 @@
 # php
 FROM php:7.4-fpm
 RUN apt-get update \
-    && apt-get install -y iputils-ping \
-    && docker-php-ext-install mysqli && docker-php-ext-enable mysqli
-
+    && apt-get install -y libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql
+    
 # # install redis
 # RUN pecl install redis-6.0 \
 #     && docker-php-ext-enable redis
